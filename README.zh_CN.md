@@ -55,7 +55,7 @@ MooMoo Station 的後端採用 Golang 開發，前端使用 React + TypeScript�
    首次部署並啓動 MooMoo Station 需要拉取鏡像、構建本地鏡像，可能耗時較久，請耐心等待。如果看到提示 "Container coze-server Started"，表示 MooMoo Station 服務已成功啓動。 
    
    ```Bash
-   cd coze-studio
+   cd MooMoo-station
    # start service
    # for macOS or Linux
    make web  
