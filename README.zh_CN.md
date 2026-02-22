@@ -1,4 +1,3 @@
-![Image](https://p9-arcosite.byteimg.com/tos-cn-i-goo7wpa0wc/943f576df3424fa98580c2ad18946719~tplv-goo7wpa0wc-image.image)
 <div align="center">
 <p>
   <a href="#什麼是-coze-studio">MooMoo Station</a> •
