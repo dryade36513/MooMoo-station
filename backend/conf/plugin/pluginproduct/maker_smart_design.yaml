@@ -1,0 +1,82 @@
+info:
+  description: 輸入設計需求，即刻生成精美設計圖；涵蓋手機海報、宣傳圖、電商圖、店鋪廣告、日籤、社交媒體配圖等多樣場景。
+  title: 創客貼智能設計
+  version: v1
+openapi: 3.0.1
+paths:
+  /coze:
+    get:
+      operationId: ckt_intelligent_design
+      parameters:
+        - description: 用戶輸入主題
+          in: query
+          name: query
+          required: true
+          schema:
+            description: 用戶輸入主題
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  body:
+                    description: api調用返回消息體
+                    properties:
+                      code:
+                        description: api調用code碼
+                        type: number
+                      data:
+                        description: 結果數據
+                        properties:
+                          result:
+                            description: 生成的設計結果集合
+                            items:
+                              properties:
+                                designId:
+                                  description: 設計Id
+                                  type: string
+                                imageUrl:
+                                  description: 設計縮略圖地址
+                                  type: string
+                                redirectUrl:
+                                  description: 設計編輯下載跳轉地址
+                                  type: string
+                                taskId:
+                                  description: 任務Id
+                                  type: string
+                              required:
+                                - designId
+                                - imageUrl
+                                - redirectUrl
+                                - taskId
+                              type: object
+                            type: array
+                        type: object
+                      msg:
+                        description: api調用返回信息
+                        type: string
+                    required:
+                      - code
+                      - msg
+                    type: object
+                  header:
+                    properties:
+                      code:
+                        type: string
+                    type: object
+                required:
+                  - body
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 輸入設計需求，即刻生成精美設計圖；涵蓋手機海報、宣傳圖、電商圖、店鋪廣告、日籤、社交媒體配圖等多樣場景。
+servers:
+  - url: https://gw.chuangkit.com/openplatform/intelligentDesign

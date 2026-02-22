@@ -1,0 +1,629 @@
+/*
+ * Copyright 2025 coze-dev Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* eslint-disable */
+/* tslint:disable */
+// @ts-nocheck
+
+import * as marketplace_common from './marketplace_common';
+
+export type Int64 = string | number;
+
+export enum BotModType {
+  SingleAgent = 1,
+  MultiAgent = 2,
+}
+
+export enum BusinessType {
+  /** 商品的經營類型
+自營 */
+  SelfOperated = 1,
+  /** 社區（與三方開發者合作） */
+  Community = 2,
+}
+
+export enum CapacityType {
+  PluginQPS = 65,
+}
+
+export enum Component {
+  UsePlugin = 1,
+  UseWorkFlow = 2,
+  UseKnowledge = 3,
+  UseVoice = 4,
+  UseCard = 5,
+  UseImageWorkflow = 6,
+}
+
+export enum ContentType {
+  Markdown = 1,
+}
+
+export enum FavoriteListSource {
+  /** 用戶自己創建的 */
+  CreatedByMe = 1,
+}
+
+/** feedCard */
+export enum FeedType {
+  /** 推薦用戶feed */
+  Recommend = 0,
+  /** 商品發佈feed */
+  ProductPublish = 1,
+  /** 商品更新feed */
+  ProductUpdate = 2,
+  /** 官方消息feed */
+  OfficialMessage = 3,
+}
+
+export enum InputType {
+  String = 1,
+  Integer = 2,
+  Boolean = 3,
+  Double = 4,
+  List = 5,
+  Object = 6,
+}
+
+export enum Origin {
+  PluginAdmin = 1,
+  BotUser = 2,
+  MarketplaceAdmin = 3,
+  /** 舉報召回下架 */
+  ReportAdmin = 4,
+  /** 商店渠道下架 */
+  StoreChannel = 5,
+}
+
+export enum PluginParamTypeFormat {
+  ImageUrl = 1,
+}
+
+export enum PluginType {
+  /** default */
+  CLoudPlugin = 0,
+  LocalPlugin = 1,
+}
+
+export enum PriceType {
+  Free = 1,
+  Paid = 2,
+}
+
+export enum ProductDraftStatus {
+  /** 默認 */
+  Default = 0,
+  /** 審覈中 */
+  Pending = 1,
+  /** 審覈通過 */
+  Approved = 2,
+  /** 審覈不通過 */
+  Rejected = 3,
+  /** 已廢棄 */
+  Abandoned = 4,
+}
+
+export enum ProductEntityType {
+  Bot = 1,
+  Plugin = 2,
+  /** Workflow = 3 , */
+  SocialScene = 4,
+  Project = 6,
+  /** 歷史工作流，後續不會再有（廢棄） */
+  WorkflowTemplate = 13,
+  /** 歷史圖像流模板，後續不會再有（廢棄） */
+  ImageflowTemplate = 15,
+  /** 模板通用標識，僅用於綁定模板相關的配置，不綁定商品 */
+  TemplateCommon = 20,
+  /** Bot 模板 */
+  BotTemplate = 21,
+  /** 工作流模板 */
+  WorkflowTemplateV2 = 23,
+  /** 圖像流模板（該類型已下線，合併入 workflow，但歷史數據會保留，前端視作 workflow 展示） */
+  ImageflowTemplateV2 = 25,
+  /** 項目模板 */
+  ProjectTemplate = 26,
+  /** coze token 類商品，理論上只會有一個 */
+  CozeToken = 50,
+  /** 訂閱 credit 的流量包，理論上只會有一個 */
+  MsgCredit = 55,
+  /** 消息訂閱類商品，理論上只有一個 */
+  SubsMsgCredit = 60,
+  Common = 99,
+  /** 專題（兼容之前的設計） */
+  Topic = 101,
+  /** 開源版本區分是否是saas插件使用 */
+  SaasPlugin = 901,
+}
+
+export enum ProductListingPeriodType {
+  /** 最近一次上架在 7 天前 */
+  CreatedBefore7D = 1,
+  /** 最近一次上架在 7 天內 */
+  UpdatedIn7D = 2,
+  /** 第一次上架在 7 天內 */
+  CreatedIn7D = 3,
+}
+
+export enum ProductListSource {
+  /** 推薦列表頁 */
+  Recommend = 1,
+  /** 個性化推薦 */
+  CustomizedRecommend = 2,
+}
+
+export enum ProductListType {
+  ByAdmin = 1,
+  ByUser = 2,
+}
+
+export enum ProductPaidType {
+  Free = 0,
+  Paid = 1,
+}
+
+export enum ProductPublishMode {
+  OpenSource = 1,
+  ClosedSource = 2,
+}
+
+export enum ProductShareScene {
+  StoreShareBotConversation = 1,
+  HomtShareBotConversation = 2,
+}
+
+export enum ProductShareType {
+  BotConversation = 1,
+}
+
+export enum ProductStatus {
+  /** 從未上架 */
+  NeverListed = 0,
+  Listed = 1,
+  Unlisted = 2,
+  Banned = 3,
+}
+
+export enum ProductUnlistType {
+  ByAdmin = 1,
+  ByUser = 2,
+}
+
+export enum ProjectType {
+  /** 默認 */
+  DEFAULT = 0,
+  /** 初見-AI生成 */
+  Chux = 1,
+}
+
+export enum ResourceType {
+  /** 項目商品/模板用到的資源 */
+  Plugin = 1,
+}
+
+export enum SocialSceneRoleType {
+  Host = 1,
+  PresetBot = 2,
+  Custom = 3,
+}
+
+export enum SortType {
+  Heat = 1,
+  Newest = 2,
+  /** 收藏時間 */
+  FavoriteTime = 3,
+  /** 相關性，只用於搜索場景 */
+  Relative = 4,
+}
+
+export enum SubscribeSKUType {
+  /** 自動續費 */
+  AutoRenew = 0,
+  /** 一次性訂閱 */
+  OneOff = 1,
+}
+
+export enum TaskStatus {
+  Running = 1,
+  Succeed = 2,
+  Failed = 3,
+}
+
+export enum TopicStatus {
+  /** 創建專題後先置0 */
+  Init = 0,
+  Listed = 1,
+  Unlisted = 2,
+}
+
+export enum UIPreviewType {
+  /** UI 預覽類型，定義對齊 UI Builder，目前用於 Project
+網頁端 */
+  Web = 1,
+  /** 移動端 */
+  Client = 2,
+}
+
+export enum UnitType {
+  YEAR = 1,
+  MONTH = 2,
+  WEEK = 3,
+  DAY = 4,
+  HOUR = 5,
+  MINUTE = 6,
+}
+
+export enum UserActionType {
+  UsedProduct = 1,
+  /** 進入過 product 的詳情頁 */
+  ViewedProduct = 2,
+}
+
+export enum UserProductSource {
+  /** 用戶發佈過的已上架商品 */
+  Listed = 1,
+  /** 用戶使用過的商品（比如對話過的Bot） */
+  Used = 2,
+  /** 用戶訪問過的商品 */
+  Viewed = 3,
+  /** 用戶收藏的商品 */
+  Favorite = 4,
+  /** 用戶點讚的商品 */
+  Like = 5,
+}
+
+export enum VerifyStatus {
+  /** 未認證 */
+  Pending = 1,
+  /** 認證成功 */
+  Succeed = 2,
+  /** 認證失敗 */
+  Failed = 3,
+  /** 認證中 */
+  InProgress = 4,
+}
+
+export enum WorkflowNodeType {
+  /** 開始 */
+  Start = 1,
+  /** 結束 */
+  End = 2,
+  /** 大模型 */
+  LLM = 3,
+  /** 插件 */
+  Api = 4,
+  /** 代碼 */
+  Code = 5,
+  /** 知識庫 */
+  Dataset = 6,
+  /** 選擇器 */
+  If = 8,
+  /** 工作流 */
+  SubWorkflow = 9,
+  /** 變量 */
+  Variable = 11,
+  /** 數據庫 */
+  Database = 12,
+  /** 消息 */
+  Message = 13,
+}
+
+export interface BuildSetting {
+  /** 支持線索提交 */
+  support_build_leads?: boolean;
+}
+
+export interface CapacityExtension {
+  capacity_type?: CapacityType;
+  /** 對應權益側的客戶套餐：0-免費；100-存量專業版；110-個人旗艦版；120-團隊版；130-企業版 */
+  user_level?: number;
+  default_amount?: number;
+  /** 擴容上限，當支持擴容時有值 */
+  max_amount?: number;
+  /** 是否支持擴容 */
+  is_support_extension?: boolean;
+}
+
+export interface ChargeItem {
+  /** 計費項
+免費額度 */
+  free_quota?: number;
+  /** 計費項標識 */
+  code?: string;
+  /** 單價 */
+  price?: number;
+  /** 單價單位 */
+  unit?: string;
+  /** 萬有商品配置配置項編碼 */
+  configuration_code?: string;
+}
+
+export interface ChargeSKUExtra {
+  quantity?: string;
+  is_self_define?: boolean;
+}
+
+export interface CommercialSetting {
+  commercial_type?: ProductPaidType;
+  /** 經營類型 */
+  business_type?: BusinessType;
+  /** 結算設置 */
+  settlement?: Settlement;
+  capacity_extensions?: Array<CapacityExtension>;
+  /** 計費項 */
+  charge_items?: Array<ChargeItem>;
+  /** 協議 */
+  product_agreements?: Array<ProductAgreement>;
+  /** 用戶維度的信息
+是否已開通三方付費插件 */
+  has_activate?: boolean;
+}
+
+export interface FavoriteEntity {
+  entity_id?: string;
+  entity_type?: ProductEntityType;
+  name?: string;
+  icon_url?: string;
+  description?: string;
+  /** 廢棄，使用UserInfo */
+  seller?: SellerInfo;
+  /** 用於跳轉到Bot編輯頁 */
+  space_id?: string;
+  /** 用戶是否有該實體所在Space的權限 */
+  has_space_permission?: boolean;
+  /** 收藏時間 */
+  favorite_at?: string;
+  product_extra?: FavoriteProductExtra;
+  user_info?: UserInfo;
+  plugin_extra?: FavoritePluginExtra;
+  project_extra?: FavoriteProjectExtra;
+}
+
+export interface FavoritePluginExtra {
+  tools?: Array<PluginTool>;
+}
+
+export interface FavoriteProductExtra {
+  product_id?: string;
+  product_status?: ProductStatus;
+  product_availability?: ProductAvailability;
+  /** 商業化配置，運營後臺展示配置信息供產品審覈 */
+  commercial_setting?: CommercialSetting;
+}
+
+export interface FavoriteProjectExtra {
+  project_id?: string;
+  project_type?: ProjectType;
+}
+
+/** feed 卡片 */
+export interface FeedCard {
+  /** 必傳字段，feed類型 */
+  feed_type?: FeedType;
+  /** 必傳字段，feed正文 */
+  feed_content?: FeedContent;
+  /** 可選字段，feed生成時間，毫秒時間戳 */
+  create_time?: string;
+  /** API層必傳字段，feed推送可選字段，用戶信息 */
+  user_info?: UserInfo;
+  /** API層必傳字段，feed推送可選字段，feed_id */
+  id?: string;
+}
+
+/** feed主體, message & quote兩者必傳其一 */
+export interface FeedContent {
+  /** 可選字段，標題 */
+  title?: RichText;
+  /** 可選字段，主體-消息 */
+  message?: RichText;
+  /** 可選字段，主體-引用區 */
+  quote?: FeedQuote;
+}
+
+/** 引用區 */
+export interface FeedQuote {
+  /** 可選字段，商品卡片 */
+  product_card?: Array<ProductFeedInfo>;
+}
+
+export interface ImageInfo {
+  uri?: string;
+  url?: string;
+}
+
+export interface ImageUploadToken {
+  access_key_id?: string;
+  secret_access_key?: string;
+  session_token?: string;
+  expired_time?: string;
+  current_time?: string;
+  service_id?: string;
+  upload_host?: string;
+}
+
+export interface OpeningDialog {
+  /** Bot開場白 */
+  content?: string;
+}
+
+export interface PartnerProduct {
+  /** 萬有夥伴信息
+夥伴賬號ID */
+  account_id?: string;
+  /** 夥伴賬號名稱 */
+  account_name?: string;
+  /** 萬有商品 code */
+  product_code?: string;
+}
+
+export interface PluginTool {
+  id?: string;
+  name?: string;
+  description?: string;
+}
+
+export interface ProductAgreement {
+  /** 協議基礎信息
+彈窗相關：簽署協議的彈窗標題（不同插件可能不一樣） */
+  title?: string;
+  /** 彈窗相關：簽署協議時的描述（不同插件可能不一樣） */
+  description?: string;
+  /** 協議的具體鏈接 */
+  link?: string;
+  /** 協議名稱 */
+  name?: string;
+  /** 協議 - 用戶維度信息（非所有協議都需要）
+用戶是否已經簽署協議 */
+  has_signed?: boolean;
+  /** 用戶是否能夠簽署協議 */
+  can_sign?: boolean;
+}
+
+/** 商品可用性相關配置：HTTP 接口和 RPC 接口都需要 */
+export interface ProductAvailability {
+  /** 用戶等級 >= user_level 時，可用該商品；枚舉值對應 benefit_common.UserLevel */
+  user_level?: number;
+  /** 商品協議相關
+是否需要簽署協議後才能使用 */
+  need_sign_agreement?: boolean;
+  /** 商品協議相關 */
+  product_agreement?: ProductAgreement;
+}
+
+export interface ProductEntity {
+  entity_type: ProductEntityType;
+  /** 可選 */
+  entity_id?: string;
+  /** 可選 */
+  entity_version?: string;
+}
+
+export interface ProductFeedInfo {
+  /** 必傳字段，商品id */
+  id?: string;
+  /** 必傳字段，商品名 */
+  name?: string;
+  /** 必傳字段，商品icon */
+  icon_url?: string;
+  /** 必傳字段，商品描述 */
+  desc?: string;
+  /** 必傳字段，素材類型 */
+  entity_type?: ProductEntityType;
+  /** 可選字段，用戶數, for bot, project */
+  user_count?: number;
+  /** 可選字段，對話數, for bot */
+  chat_conversation_count?: number;
+  /** 可選字段，收藏數, for bot */
+  favorite_count?: number;
+  /** 可選字段，bots使用數,for plugin */
+  bots_use_cout?: number;
+  /** 可選字段，複製數, for workflow & imageflow */
+  duplicate_count?: number;
+  /** 可選字段，使用數, for project */
+  use_count?: number;
+}
+
+/** 富文本類型 */
+export interface RichText {
+  /** 必傳字段，富文本數據類型 */
+  content_type?: ContentType;
+  /** 必傳字段，數據內容 */
+  text?: string;
+}
+
+export interface SellerInfo {
+  user_id?: string;
+  user_name?: string;
+  avatar_url?: string;
+}
+
+export interface Settlement {
+  /** 結算設置
+萬有夥伴信息 - 社區插件 */
+  partner_product?: PartnerProduct;
+  /** 綁定的服務樹 - 自營插件 */
+  service_tree?: string;
+}
+
+export interface SKUAttrInfo {
+  AttrKey?: string;
+  AttrValue?: string;
+}
+
+export interface SKUEntity {
+  sku_id?: string;
+  attrs?: Array<SKUAttrInfo>;
+  prices?: Array<marketplace_common.Price>;
+  /** 訂閱類商品纔會有 */
+  subscription_info?: SubscriptionExtra;
+  /** sku名稱，用於展示 */
+  sku_title?: string;
+}
+
+/** 自動更新訂閱 */
+export interface SubscriptionAutoRenewSKU {
+  /** 購買週期 */
+  billing_period?: SubscriptionPeriod;
+  /** 訂閱整個週期數目(trail期和intro期也被計算在內),單位是一個SubscriptionPeriod。續費超過該次數後，不再繼續續費。0或不輸入均表示不限制。 */
+  billing_period_count?: number;
+  /** 折扣期 */
+  trial_period?: SubscriptionPeriod;
+  /** 折扣期次數（最小爲1） */
+  trial_period_count?: number;
+  /** 寬限期 */
+  grade_period?: SubscriptionPeriod;
+}
+
+/** 訂閱類商品 sku 信息，需要與普通商品 sku 隔開 */
+export interface SubscriptionExtra {
+  subs_sku_type?: SubscribeSKUType;
+  auto_renew_sku?: SubscriptionAutoRenewSKU;
+  one_off_sku?: SubscriptionOneOffSKU;
+  benefit_ids?: Array<Int64>;
+  /** 訂閱等級 */
+  subscription_level?: number;
+}
+
+/** 一次性訂閱 */
+export interface SubscriptionOneOffSKU {
+  billig_period?: SubscriptionPeriod;
+}
+
+export interface SubscriptionPeriod {
+  /** 時間週期單位，YEAR/MONTH/DAY/HOUR/MINUTE/WEEK */
+  unit?: string;
+  /** 時間週期長度，單位是一個unit */
+  length?: number;
+  unit_type?: UnitType;
+}
+
+export interface UserInfo {
+  user_id?: string;
+  user_name?: string;
+  name?: string;
+  avatar_url?: string;
+  user_label?: UserLabel;
+  follow_type?: marketplace_common.FollowType;
+}
+
+export interface UserLabel {
+  label_id?: string;
+  label_name?: string;
+  icon_uri?: string;
+  icon_url?: string;
+  jump_link?: string;
+}
+/* eslint-enable */

@@ -1,0 +1,409 @@
+info:
+  description: |-
+    調用飛書開放平臺任務相關API，支持以下操作：
+    1.創建任務：輸入任務標題、開始時間、結束時間等信息創建飛書任務；
+    2.更新任務：對飛書任務的任務標題、任務時間等信息做修改；
+    3.刪除任務：對創建的飛書任務做刪除；
+    4.列出所有任務：查詢用戶下單所有飛書任務；
+  title: 飛書任務
+  version: v1
+openapi: 3.0.1
+paths:
+  /task/create_task:
+    post:
+      operationId: create_task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                completed_at:
+                  description: 任務完成時間，格式：2006-01-02 15:04:05，不填寫表示創建一個未完成任務；填寫一個具體的時間表示創建一個已完成任務
+                  type: string
+                description:
+                  description: 任務備註
+                  type: string
+                end_time:
+                  description: 任務結束時間，格式：2006-01-02 15:04:05
+                  type: string
+                start_time:
+                  description: 任務開始時間，格式：2006-01-02 15:04:05
+                  type: string
+                summary:
+                  description: 任務標題
+                  type: string
+              required:
+                - summary
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 錯誤碼，非0表示失敗
+                    type: number
+                  data:
+                    description: 返回數據
+                    properties:
+                      completed_at:
+                        description: 任務完成時間，格式：2024-07-19 20:50:00
+                        type: string
+                      created_at:
+                        description: 任務創建時間，格式：2024-07-19 20:50:00
+                        type: string
+                      creator:
+                        description: 任務創建者信息
+                        properties:
+                          id:
+                            description: 創建者用戶 ID
+                            type: string
+                          type:
+                            description: 創建者類型
+                            type: string
+                        type: object
+                      description:
+                        description: 任務描述
+                        type: string
+                      end_time:
+                        description: 任務截止時間，格式：2024-07-19 21:20:00
+                        type: string
+                      guid:
+                        description: 任務guid，任務的唯一ID
+                        type: string
+                      is_end_time_all_day:
+                        description: 結束時間是否截止到一個日期
+                        type: boolean
+                      is_start_time_all_day:
+                        description: 開始時間是否截止到一個日期
+                        type: boolean
+                      members:
+                        description: 成員列表
+                        items:
+                          description: 成員信息
+                          properties:
+                            id:
+                              description: 成員 ID
+                              type: string
+                            name:
+                              description: 成員名稱
+                              type: string
+                            role:
+                              description: 成員角色
+                              type: string
+                            type:
+                              description: 成員類型
+                              type: string
+                          type: object
+                        type: array
+                      mode:
+                        description: 任務的模式。1 - 會籤任務；2 - 或籤任務
+                        type: integer
+                      parent_task_guid:
+                        description: 如果當前任務爲某個任務的子任務，返回父任務的guid
+                        type: string
+                      repeat_rule:
+                        description: 如果任務爲重複任務，返回重複任務的配置
+                        type: string
+                      source:
+                        description: 任務來源
+                        type: integer
+                      start_time:
+                        description: 任務開始時間，格式：2024-07-19 20:20:00
+                        type: string
+                      status:
+                        description: 任務狀態，支持"todo"和"done"兩種狀態
+                        type: string
+                      subtask_count:
+                        description: 該任務的子任務的個數
+                        type: integer
+                      summary:
+                        description: 任務標題
+                        type: string
+                      task_id:
+                        description: 任務界面上的代碼
+                        type: string
+                      url:
+                        description: 任務的分享鏈接
+                        type: string
+                    type: object
+                  log_id:
+                    description: 鏈路追蹤 id
+                    type: string
+                  msg:
+                    description: 錯誤描述
+                    type: string
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 創建飛書任務,根據輸入的任務標題、任務時間創建飛書任務
+  /task/delete_task:
+    delete:
+      operationId: delete_task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                task_guid:
+                  description: 要刪除的任務guid，支持傳任務ID和任務鏈接URL，任務ID 例如：8b5425ec-9f2a-43bd-a3ab-01912f50282b；任務鏈接url 例如：https://applink.feishu-pre.net/client/todo/detail?guid=8c6bf822-e4da-449a-b82a-dc44020f9be9&suite_entity_num=t21587362
+                  type: string
+              required:
+                - task_guid
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 錯誤碼，非 0 表示失敗
+                    type: integer
+                  log_id:
+                    description: 鏈路追蹤 id
+                    type: string
+                  msg:
+                    description: ' 錯誤描述'
+                    type: string
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 刪除飛書任務
+  /task/list_tasks:
+    get:
+      operationId: list_tasks
+      parameters:
+        - description: 用戶 ID 類型
+          in: query
+          name: user_id_type
+          schema:
+            default: open_id
+            type: string
+        - description: 每頁的任務數量，取值範圍1-100
+          in: query
+          name: page_size
+          schema:
+            default: 10
+            type: integer
+        - description: 查詢結果還有更多項時會同時返回新的 page_token，下次遍歷可採用該 page_token 獲取查詢結果
+          in: query
+          name: page_token
+          schema:
+            type: string
+        - description: 是否按任務完成進行過濾。填寫true表示只列出已完成任務；填寫false表示只列出未完成任務。不填寫表示不過濾。
+          in: query
+          name: completed
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 錯誤碼，非0表示失敗
+                    type: integer
+                  data:
+                    description: 返回數據
+                    properties:
+                      has_more:
+                        description: 是否還有更多項
+                        type: boolean
+                      items:
+                        description: 返回的任務列表
+                        items:
+                          description: 任務信息
+                          properties:
+                            completed_at:
+                              description: 任務完成的時間，格式：2024-07-19 21:20:00
+                              type: string
+                            created_at:
+                              description: 任務創建時間，格式：2024-07-19 21:20:00
+                              type: string
+                            creator:
+                              description: 任務創建者
+                              properties:
+                                id:
+                                  description: 表示member的id
+                                  type: string
+                                role:
+                                  description: 成員角色
+                                  type: string
+                                type:
+                                  description: 成員的類型
+                                  type: string
+                              type: object
+                            description:
+                              description: 任務備註
+                              type: string
+                            end_time:
+                              description: 任務結束時間，格式：2024-07-19 21:20:00
+                              type: string
+                            guid:
+                              description: 任務guid，任務的唯一ID
+                              type: string
+                            is_end_time_all_day:
+                              description: 結束時間是否截止到一個日期
+                              type: boolean
+                            is_milestone:
+                              description: 是否是里程碑任務
+                              type: boolean
+                            is_start_time_all_day:
+                              description: 開始時間是否截止到一個日期
+                              type: boolean
+                            members:
+                              description: 任務成員列表
+                              items:
+                                description: 成員信息
+                                properties:
+                                  id:
+                                    description: 表示member的id
+                                    type: string
+                                  role:
+                                    description: 成員角色
+                                    type: string
+                                  type:
+                                    description: 成員的類型
+                                    type: string
+                                type: object
+                              type: array
+                            mode:
+                              description: 任務的模式。1 - 會籤任務；2 - 或籤任務
+                              type: integer
+                            parent_task_guid:
+                              description: 如果當前任務爲某個任務的子任務，返回父任務的guid
+                              type: string
+                            repeat_rule:
+                              description: 如果任務爲重複任務，返回重複任務的配置
+                              type: string
+                            source:
+                              description: 任務創建的來源
+                              type: integer
+                            start_time:
+                              description: 任務開始時間，格式：2024-07-19 21:20:00
+                              type: string
+                            status:
+                              description: 任務的狀態，支持"todo"和"done"兩種狀態
+                              type: string
+                            subtask_count:
+                              description: 該任務的子任務個數
+                              type: integer
+                            summary:
+                              description: 任務標題
+                              type: string
+                            task_id:
+                              description: 任務界面上的代碼
+                              type: string
+                            updated_at:
+                              description: 任務最後一次更新的時間，格式：2024-07-19 21:20:00
+                              type: string
+                            url:
+                              description: 任務的分享鏈接
+                              type: string
+                          type: object
+                        type: array
+                      page_token:
+                        description: 分頁標記，當 has_more 爲 true 時，會同時返回新的 page_token，否則不返回 page_token
+                        type: string
+                    type: object
+                  log_id:
+                    description: 鏈路追蹤 id
+                    type: string
+                  msg:
+                    description: 錯誤描述
+                    type: string
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 列取飛書任務列表
+  /task/update_task:
+    patch:
+      operationId: update_task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                completed_time:
+                  description: 任務完成時間,有傳入才更新，格式：2024-08-19 11:20:00
+                  type: string
+                description:
+                  description: 任務描述：如：進行一場需求評審會
+                  type: string
+                end_time:
+                  description: 任務結束時間,有傳入才更新，格式：2024-08-15 23:20:00
+                  type: string
+                start_time:
+                  description: 任務開始時間,有傳入才更新，格式：2024-08-15 23:00:00
+                  type: string
+                summary:
+                  description: 任務標題，如：需求評審
+                  type: string
+                task_guid:
+                  description: 任務ID，支持 傳入任務ID和任務鏈接URL，任務ID 如：42cad8a0-f8c8-4344-9be2-d1d7e8e91b64；任務鏈接url 如：https://applink.feishu-pre.net/client/todo/detail?guid=42cad8a0-f8c8-4344-9be2-d1d7e8e91b64&suite_entity_num=t21700217
+                  type: string
+              required:
+                - task_guid
+              type: object
+        description: new desc
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 錯誤碼，非 0 表示失敗
+                    type: integer
+                  data:
+                    description: 任務信息
+                    properties:
+                      completed_time:
+                        description: 任務完成時間，格式：2024-09-17 23:30:00
+                        type: string
+                      created_at:
+                        description: 創建時間，格式：2024-09-17 23:30:00
+                        type: string
+                      description:
+                        description: 任務描述
+                        type: string
+                      end_time:
+                        description: 任務結束時間，格式：2024-08-17 12:00:00
+                        type: string
+                      start_time:
+                        description: 任務開始時間，格式：2024-08-16 10:00:00
+                        type: string
+                      summary:
+                        description: ' 任務標題'
+                        type: string
+                      task_guid:
+                        description: 任務 ID
+                        type: string
+                      updated_at:
+                        description: 更新時間，格式：2024-09-17 23:30:00
+                        type: string
+                    type: object
+                  log_id:
+                    description: 鏈路追蹤 id
+                    type: string
+                  msg:
+                    description: 錯誤描述
+                    type: string
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 更新飛書任務
+servers:
+  - url: https://lark-plugin-api.solutionsuite.cn/lark-plugin

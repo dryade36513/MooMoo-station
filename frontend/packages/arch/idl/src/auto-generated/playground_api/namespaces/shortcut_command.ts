@@ -1,0 +1,156 @@
+/*
+ * Copyright 2025 coze-dev Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* eslint-disable */
+/* tslint:disable */
+// @ts-nocheck
+
+import * as bot_common from './bot_common';
+
+export type Int64 = string | number;
+
+export enum InputType {
+  TextInput = 0,
+  Select = 1,
+  UploadImage = 2,
+  UploadDoc = 3,
+  UploadTable = 4,
+  UploadAudio = 5,
+  MixUpload = 6,
+  VIDEO = 7,
+  ARCHIVE = 8,
+  CODE = 9,
+  TXT = 10,
+  PPT = 11,
+}
+
+export enum SendType {
+  /** 直接發query */
+  SendTypeQuery = 0,
+  /** 使用面板 */
+  SendTypePanel = 1,
+}
+
+export enum ToolType {
+  /** 使用WorkFlow */
+  ToolTypeWorkFlow = 1,
+  /** 使用插件 */
+  ToolTypePlugin = 2,
+}
+
+export interface Components {
+  /** panel參數 */
+  name?: string;
+  description?: string;
+  input_type?: InputType;
+  /** 請求工具時，參數的key */
+  parameter?: string;
+  options?: Array<string>;
+  default_value?: DefaultValue;
+  /** 是否隱藏不展示 */
+  hide?: boolean;
+  /** input_type爲MixUpload時，支持哪些類型 */
+  upload_options?: Array<InputType>;
+}
+
+export interface CreateShortcutCommandRequest {
+  object_id?: string;
+  shortcuts?: ShortcutCommand;
+}
+
+export interface CreateShortcutCommandResponse {
+  shortcuts?: ShortcutCommand;
+}
+
+export interface CreateUpdateShortcutCommandRequest {
+  object_id: string;
+  space_id: string;
+  shortcuts: ShortcutCommand;
+}
+
+export interface CreateUpdateShortcutCommandResponse {
+  shortcuts?: ShortcutCommand;
+}
+
+export interface DefaultValue {
+  value?: string;
+  type?: InputType;
+}
+
+export interface ShortcutCommand {
+  /** 綁定實體ID */
+  object_id?: string;
+  /** 命令名稱 */
+  command_name?: string;
+  /** 快捷指令 */
+  shortcut_command?: string;
+  /** 描述 */
+  description?: string;
+  /** 發送類型 */
+  send_type?: SendType;
+  /** 使用工具type */
+  tool_type?: ToolType;
+  work_flow_id?: string;
+  plugin_id?: string;
+  plugin_api_name?: string;
+  /** 模板query */
+  template_query?: string;
+  /** panel參數 */
+  components_list?: Array<Components>;
+  /** 表單的schema */
+  card_schema?: string;
+  /** 指令ID */
+  command_id?: string;
+  /** 工具信息 包含name+變量列表+... */
+  tool_info?: ToolInfo;
+  /** 指令圖標 */
+  shortcut_icon?: ShortcutFileInfo;
+  /** multi的指令時，該指令由哪個節點執行 */
+  agent_id?: string;
+  /** 區分插件來源，開源版本使用字段 */
+  plugin_from?: bot_common.PluginFrom;
+}
+
+export interface ShortcutFileInfo {
+  url?: string;
+  uri?: string;
+}
+
+export interface ShortcutStruct {
+  /** 快捷指令ID列表 實體上綁定的 */
+  shortcut_sort?: Array<string>;
+  /** 快捷指令內容list */
+  shortcut_list?: Array<ShortcutCommand>;
+}
+
+export interface ToolInfo {
+  tool_name?: string;
+  /** 變量列表 插件&workFLow */
+  tool_params_list?: Array<ToolParams>;
+}
+
+export interface ToolParams {
+  /** 參數列表 */
+  name?: string;
+  required?: boolean;
+  desc?: string;
+  type?: string;
+  /** 默認值 */
+  default_value?: string;
+  /** 是否是panel參數 */
+  refer_component?: boolean;
+}
+/* eslint-enable */

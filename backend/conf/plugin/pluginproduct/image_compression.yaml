@@ -1,0 +1,58 @@
+info:
+  description: 上傳圖片鏈接，返回壓縮後的base64
+  title: 圖片壓縮
+  version: v1
+openapi: 3.0.1
+paths:
+  /img2base64/img2base64:
+    post:
+      operationId: img2base64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                output_height:
+                  description: 壓縮後圖片高度
+                  type: integer
+                output_width:
+                  description: 壓縮後圖片寬度
+                  type: integer
+                quality:
+                  description: 壓縮質量。範圍1-100，數字越大，壓縮後圖片質量越高
+                  type: integer
+                url:
+                  description: 圖片鏈接
+                  format: image_url
+                  type: string
+                  x-assist-type: image
+              required:
+                - quality
+                - url
+                - output_height
+                - output_width
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  compressed_size:
+                    description: 壓縮後文件大小
+                    type: string
+                  content:
+                    description: base64圖片
+                    type: string
+                  error:
+                    type: string
+                  original_size:
+                    description: 壓縮前文件大小
+                    type: string
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 壓縮圖片後返回base64
+servers:
+  - url: https://7458701539994107904.cozefn.cn

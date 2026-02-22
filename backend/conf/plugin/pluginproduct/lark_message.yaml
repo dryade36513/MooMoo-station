@@ -1,0 +1,499 @@
+info:
+  description: |-
+    飛書消息，支持以下功能
+    
+    1. 使用飛書自定義機器人 webhook 發送消息；
+    2. 使用飛書應用機器人發送消息；
+    3. 獲取指定單聊、羣聊的消息歷史；
+    4. 獲取指定話題的消息歷史；
+  title: 飛書消息
+  version: v1
+openapi: 3.0.1
+paths:
+  /message/get_chat_messages:
+    get:
+      operationId: get_chat_messages
+      parameters:
+        - description: appid 是飛書開放平臺應用的唯一標識，創建應用後獲得。
+          in: header
+          name: appid
+          schema:
+            type: string
+        - description: appsecret 應用祕鑰，創建應用後獲得。
+          in: header
+          name: appsecret
+          schema:
+            type: string
+        - description: 羣聊或單聊的 ID，獲取方式參見羣 ID 說明。https://open.larkoffice.com/document/server-docs/group/chat/chat-id-description
+          in: query
+          name: container_id
+          required: true
+          schema:
+            type: string
+        - description: 待查詢歷史信息的起始時間，格式爲 "2006-01-02 15:04:05"。
+          in: query
+          name: start_time
+          schema:
+            type: string
+        - description: 待查詢歷史信息的結束時間，格式爲 "2006-01-02 15:04:05"。
+          in: query
+          name: end_time
+          schema:
+            type: string
+        - description: 消息排序方式，可選值有 ByCreateTimeAsc：按消息創建時間升序排列；ByCreateTimeDesc：按消息創建時間降序排列。默認值爲：ByCreateTimeAsc。注意：使用 page_token 分頁請求時，排序方式（sort_type）均與第一次請求一致，不支持中途改換排序方式。
+          in: query
+          name: sort_type
+          schema:
+            default: ByCreateTimeAsc
+            type: string
+        - description: 分頁大小，即單次請求所返回的數據條目數。默認值爲 20，取值範圍爲 [1,50]。
+          in: query
+          name: page_size
+          schema:
+            default: 20
+            type: integer
+        - description: 分頁標記，第一次請求不填，表示從頭開始遍歷；分頁查詢結果還有更多項時會同時返回新的 page_token，下次遍歷可採用該 page_token 獲取查詢結果。
+          in: query
+          name: page_token
+          schema:
+            type: string
+        - description: 租戶訪問憑證，即以租戶（企業或團隊）身份調用 API。
+          in: header
+          name: tenant-access-token
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: new desc
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 錯誤碼，非 0 表示失敗。
+                    type: number
+                  data:
+                    description: 返回數據
+                    properties:
+                      has_more:
+                        description: 是否還有更多項
+                        type: boolean
+                      items:
+                        description: 歷史消息數據
+                        items:
+                          description: 消息詳情
+                          properties:
+                            body:
+                              description: 通過 body 內的 content 參數，返回當前的消息內容。
+                              properties:
+                                content:
+                                  description: 消息內容，JSON 結構序列化後的字符串，不同消息類型（msg_type）對應不同內容。  注意：卡片消息內容與在卡片搭建工具中獲取的卡片 JSON 不一致，暫不支持返回原始卡片 JSON。
+                                  type: string
+                              type: object
+                            chat_id:
+                              description: 消息所屬的羣 ID。你可以調用獲取羣信息接口，根據羣 ID 獲取羣詳情。https://open.larkoffice.com/document/uAjLw4CM/ukTMukTMukTM/reference/im-v1/chat/get
+                              type: string
+                            create_time:
+                              description: 消息生成的時間
+                              type: string
+                            deleted:
+                              description: '消息是否被撤回或刪除。true: 是，false: 否'
+                              type: boolean
+                            mentions:
+                              description: 消息內被 @ 的用戶或機器人列表。
+                              properties:
+                                id:
+                                  description: 被 @ 的用戶或機器人的 open_id。
+                                  type: string
+                                id_type:
+                                  description: 被 @ 的用戶或機器人的 ID 類型，目前僅支持 open_id。
+                                  type: string
+                                key:
+                                  description: 被 @ 的用戶或機器人序號。例如，第 3 個被 @ 到的成員，取值爲 @_user_3。
+                                  type: string
+                                name:
+                                  description: 被 @ 的用戶或機器人的姓名。
+                                  type: string
+                                tenant_key:
+                                  description: 租戶唯一標識。該標識用來識別被 @ 用戶或機器人的租戶，也可以用來獲取租戶訪問憑證（tenant_access_token）。
+                                  type: string
+                              type: object
+                            message_id:
+                              description: 消息 ID，由系統生成的唯一 ID 標識。後續對消息的管理維護操作均需要使用該 ID。
+                              type: string
+                            msg_type:
+                              description: 消息類型。各類型詳情參考 https://open.larkoffice.com/document/server-docs/im-v1/message-content-description/message_content
+                              type: string
+                            parent_id:
+                              description: 父消息 ID。在有多個回覆的消息樹中，parent_id 爲當前消息上一層的消息 message_id。如果回覆的是話題，則 parent_id 始終爲話題內根消息的 message_id。關於 parent_id 的更多說明，參見消息管理概述。https://open.larkoffice.com/document/server-docs/im-v1/message/intro
+                              type: string
+                            root_id:
+                              description: 根消息 ID。在有多個回覆的消息樹中，root_id 爲根消息的 message_id。如果回覆的是話題，則 root_id 爲話題內根消息的 message_id。關於 root_id 的更多說明，參見消息管理概述。https://open.larkoffice.com/document/server-docs/im-v1/message/intro
+                              type: string
+                            sender:
+                              description: 當前消息的發送者信息。
+                              properties:
+                                id:
+                                  description: 發送者的 ID。
+                                  type: string
+                                id_type:
+                                  description: 發送者的 ID 類型。可能值有： open_id：表示發送者爲用戶，且返回的 ID 是用戶的 open_id。 app_id：表示發送者爲應用，切返回的 ID 是應用的 app_id。
+                                  type: string
+                                sender_type:
+                                  description: '發送者類型。 可能值有： user: 用戶 app: 應用 anonymous: 匿名 unknown: 未知。'
+                                  type: string
+                                tenant_key:
+                                  description: 租戶唯一標識。該標識用來識別租戶，也可以用來獲取租戶訪問憑證（tenant_access_token）。
+                                  type: string
+                              type: object
+                            thread_id:
+                              description: 消息所屬的話題 ID（不返回說明該消息不是話題形式的消息）。瞭解話題可參見話題概述。https://open.larkoffice.com/document/uAjLw4CM/ukTMukTMukTM/reference/im-v1/message/thread-introduction
+                              type: string
+                            update_time:
+                              description: 消息更新的時間
+                              type: string
+                            updated:
+                              description: 消息是否被更新。 true：是，false：否。
+                              type: boolean
+                            upper_message_id:
+                              description: 合併轉發消息中，上一層級的消息 ID，僅在合併轉發場景會有返回值。瞭解 upper_message_id 可參見消息管理概述。https://open.larkoffice.com/document/server-docs/im-v1/message/intro
+                              type: string
+                          type: object
+                        type: array
+                      page_token:
+                        description: 分頁標記，當 has_more 爲 true 時，會同時返回新的 page_token，否則不返回 page_token。
+                        type: string
+                    type: object
+                  log_id:
+                    description: 鏈路追蹤 id
+                    type: string
+                  msg:
+                    description: 錯誤描述
+                    type: string
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 獲取指定單聊、羣聊的消息歷史
+  /message/get_thread_messages:
+    get:
+      operationId: get_thread_messages
+      parameters:
+        - description: appid 是飛書開放平臺應用的唯一標識，創建應用後獲得。
+          in: header
+          name: appid
+          schema:
+            type: string
+        - description: appsecret 應用祕鑰，創建應用後獲得。
+          in: header
+          name: appsecret
+          schema:
+            type: string
+        - description: 話題 ID，獲取方式參見話題概述的如何獲取 thread_id 章節。https://open.larkoffice.com/document/uAjLw4CM/ukTMukTMukTM/reference/im-v1/message/thread-introduction
+          in: query
+          name: container_id
+          required: true
+          schema:
+            type: string
+        - description: 待查詢歷史信息的起始時間，格式爲 "2006-01-02 15:04:05"。
+          in: query
+          name: start_time
+          schema:
+            type: string
+            x-global-disable: true
+        - description: 待查詢歷史信息的結束時間，格式爲 "2006-01-02 15:04:05"。
+          in: query
+          name: end_time
+          schema:
+            type: string
+            x-global-disable: true
+        - description: 消息排序方式，可選值有 ByCreateTimeAsc：按消息創建時間升序排列；ByCreateTimeDesc：按消息創建時間降序排列。默認值爲：ByCreateTimeAsc。注意：使用 page_token 分頁請求時，排序方式（sort_type）均與第一次請求一致，不支持中途改換排序方式。
+          in: query
+          name: sort_type
+          schema:
+            default: ByCreateTimeAsc
+            type: string
+        - description: 分頁大小，即單次請求所返回的數據條目數。默認值爲 20，取值範圍爲 [1,50]。
+          in: query
+          name: page_size
+          schema:
+            default: 20
+            type: integer
+        - description: 分頁標記，第一次請求不填，表示從頭開始遍歷；分頁查詢結果還有更多項時會同時返回新的 page_token，下次遍歷可採用該 page_token 獲取查詢結果。
+          in: query
+          name: page_token
+          schema:
+            type: string
+        - description: 租戶訪問憑證，即以租戶（企業或團隊）身份調用 API。
+          in: header
+          name: tenant-access-token
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: new desc
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 錯誤碼，非 0 表示失敗。
+                    type: number
+                  data:
+                    description: 返回數據
+                    properties:
+                      has_more:
+                        description: 是否還有更多項
+                        type: boolean
+                      items:
+                        description: 歷史消息數據
+                        items:
+                          description: 消息詳情
+                          properties:
+                            body:
+                              description: 通過 body 內的 content 參數，返回當前的消息內容。
+                              properties:
+                                content:
+                                  description: 消息內容，JSON 結構序列化後的字符串，不同消息類型（msg_type）對應不同內容。 注意：卡片消息內容與在卡片搭建工具中獲取的卡片 JSON 不一致，暫不支持返回原始卡片 JSON。
+                                  type: string
+                              type: object
+                            chat_id:
+                              description: 消息所屬的羣 ID。你可以調用獲取羣信息接口，根據羣 ID 獲取羣詳情。https://open.larkoffice.com/document/uAjLw4CM/ukTMukTMukTM/reference/im-v1/chat/get
+                              type: string
+                            create_time:
+                              description: 消息生成的時間
+                              type: string
+                            deleted:
+                              description: '消息是否被撤回或刪除。true: 是，false: 否'
+                              type: boolean
+                            mentions:
+                              description: 消息內被 @ 的用戶或機器人列表。
+                              properties:
+                                id:
+                                  description: 被 @ 的用戶或機器人的 open_id。
+                                  type: string
+                                id_type:
+                                  description: 被 @ 的用戶或機器人的 ID 類型，目前僅支持 open_id。
+                                  type: string
+                                key:
+                                  description: 被 @ 的用戶或機器人序號。例如，第 3 個被 @ 到的成員，取值爲 @_user_3。
+                                  type: string
+                                name:
+                                  description: 被 @ 的用戶或機器人的姓名。
+                                  type: string
+                                tenant_key:
+                                  description: 租戶唯一標識。該標識用來識別被 @ 用戶或機器人的租戶，也可以用來獲取租戶訪問憑證（tenant_access_token）。
+                                  type: string
+                              type: object
+                            message_id:
+                              description: 消息 ID，由系統生成的唯一 ID 標識。後續對消息的管理維護操作均需要使用該 ID。
+                              type: string
+                            msg_type:
+                              description: 消息類型。各類型詳情參考 https://open.larkoffice.com/document/server-docs/im-v1/message-content-description/message_content
+                              type: string
+                            parent_id:
+                              description: 父消息 ID。在有多個回覆的消息樹中，parent_id 爲當前消息上一層的消息 message_id。如果回覆的是話題，則 parent_id 始終爲話題內根消息的 message_id。關於 parent_id 的更多說明，參見消息管理概述。https://open.larkoffice.com/document/server-docs/im-v1/message/intro
+                              type: string
+                            root_id:
+                              description: 根消息 ID。在有多個回覆的消息樹中，root_id 爲根消息的 message_id。如果回覆的是話題，則 root_id 爲話題內根消息的 message_id。關於 root_id 的更多說明，參見消息管理概述。https://open.larkoffice.com/document/server-docs/im-v1/message/intro
+                              type: string
+                            sender:
+                              description: 當前消息的發送者信息。
+                              properties:
+                                id:
+                                  description: 發送者的 ID。
+                                  type: string
+                                id_type:
+                                  description: 發送者的 ID 類型。可能值有： open_id：表示發送者爲用戶，且返回的 ID 是用戶的 open_id。 app_id：表示發送者爲應用，切返回的 ID 是應用的 app_id。
+                                  type: string
+                                sender_type:
+                                  description: '發送者類型。 可能值有： user: 用戶 app: 應用 anonymous: 匿名 unknown: 未知。'
+                                  type: string
+                                tenant_key:
+                                  description: 租戶唯一標識。該標識用來識別租戶，也可以用來獲取租戶訪問憑證（tenant_access_token）。
+                                  type: string
+                              type: object
+                            thread_id:
+                              description: 消息所屬的話題 ID（不返回說明該消息不是話題形式的消息）。瞭解話題可參見話題概述。https://open.larkoffice.com/document/uAjLw4CM/ukTMukTMukTM/reference/im-v1/message/thread-introduction
+                              type: string
+                            update_time:
+                              description: 消息更新的時間
+                              type: string
+                            updated:
+                              description: 消息是否被更新。 true：是，false：否。
+                              type: boolean
+                            upper_message_id:
+                              description: 合併轉發消息中，上一層級的消息 ID，僅在合併轉發場景會有返回值。瞭解 upper_message_id 可參見消息管理概述。https://open.larkoffice.com/document/server-docs/im-v1/message/intro
+                              type: string
+                          type: object
+                        type: array
+                      page_token:
+                        description: 分頁標記，當 has_more 爲 true 時，會同時返回新的 page_token，否則不返回 page_token。
+                        type: string
+                    type: object
+                  log_id:
+                    description: 鏈路追蹤 id
+                    type: string
+                  msg:
+                    description: 錯誤描述
+                    type: string
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 獲取指定話題的消息歷史
+  /message/send_bot_message:
+    post:
+      operationId: send_bot_message
+      parameters:
+        - description: 租戶訪問憑證，即以租戶（企業或團隊）身份調用 API。
+          in: header
+          name: tenant-access-token
+          schema:
+            type: string
+        - description: 用戶 ID 類型，可選值有 open_id、union_id、user_id、email、chat_id。
+          in: query
+          name: receive_id_type
+          required: true
+          schema:
+            type: string
+        - description: appid 是飛書開放平臺應用的唯一標識，創建應用後獲得。
+          in: header
+          name: appid
+          schema:
+            type: string
+        - description: appsecret 應用祕鑰，創建應用後獲得。
+          in: header
+          name: appsecret
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                content:
+                  description: 消息內容，文本字符串或者JSON 結構序列化後的字符串，其中 msg_type 爲 text、share_chat、share_user、image 時支持文本字符串。不同 msg_type 對應不同的消息內容，具體格式說明參考：https://open.larkoffice.com/document/server-docs/im-v1/message-content-description/create_json
+                  type: string
+                msg_type:
+                  description: '消息類型 包括：text、post、image、file、audio、media、sticker、interactive、share_chat、share_user 等，類型定義請參考: https://open.larkoffice.com/document/server-docs/im-v1/message-content-description/create_json'
+                  type: string
+                receive_id:
+                  description: 消息接收者的 ID，ID 類型應與查詢參數 receive_id_type 對應。
+                  type: string
+              required:
+                - receive_id
+                - msg_type
+                - content
+              type: object
+        description: new desc
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 錯誤碼，非 0 表示失敗。
+                    type: number
+                  data:
+                    description: 返回結果
+                    properties:
+                      chat_id:
+                        description: 所屬的羣
+                        type: string
+                      create_time:
+                        description: 消息生成的時間戳（毫秒）
+                        type: string
+                      deleted:
+                        description: 消息是否被撤回
+                        type: boolean
+                      message_id:
+                        description: 消息 id
+                        type: string
+                      msg_type:
+                        description: 消息類型 包括：text、post、image、file、audio、media、sticker、interactive、share_chat、share_user 等。
+                        type: string
+                      parent_id:
+                        description: 父消息的 id，用於回覆消息場景。
+                        type: string
+                      root_id:
+                        description: 根消息 id，用於回覆消息場景。
+                        type: string
+                      thread_id:
+                        description: 消息所屬的話題 id
+                        type: string
+                      update_time:
+                        description: 消息更新的時間戳（毫秒）
+                        type: string
+                      updated:
+                        description: 消息是否被更新
+                        type: boolean
+                    type: object
+                  log_id:
+                    description: 鏈路追蹤 id
+                    type: string
+                  msg:
+                    description: 錯誤描述
+                    type: string
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 使用應用機器人發送飛書消息
+  /message/send_webhook_message:
+    post:
+      operationId: send_webhook_message
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                content:
+                  description: 消息內容，文本字符串或者 JSON 結構序列化後的字符串，其中 msg_type 爲 text、share_chat、image 時支持文本字符串。不同 msg_type 對應不同內容，具體格式說明參考：發送消息內容(https://open.larkoffice.com/document/server-docs/im-v1/message-content-description/create_json)
+                  type: string
+                msg_type:
+                  default: text
+                  description: '消息類型 支持：text、image、interactive、share_chat 類型，不支持 post、audio、media、share_user 等類型。類型定義請參考: https://open.larkoffice.com/document/server-docs/im-v1/message-content-description/create_json'
+                  type: string
+                webhook:
+                  description: webhook key，支持 webhook URL。
+                  type: string
+              required:
+                - webhook
+                - msg_type
+                - content
+              type: object
+        description: new desc
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 錯誤碼，非 0 表示失敗。
+                    type: number
+                  log_id:
+                    description: 鏈路追蹤 id
+                    type: string
+                  msg:
+                    description: 錯誤描述
+                    type: string
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 使用飛書自定義機器人 webhook 發送消息
+servers:
+  - url: https://lark-plugin-api.solutionsuite.cn/lark-plugin

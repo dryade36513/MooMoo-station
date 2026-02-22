@@ -1,0 +1,128 @@
+id: 60080
+name: Doubao-Seed-1.6-Flash
+icon_uri: default_icon/doubao_v2.png
+icon_url: ""
+description:
+    zh: 有極致推理速度的多模態深度思考模型；同時支持文本和視覺理解。文本理解能力超過上一代 Lite 系列模型，視覺理解比肩友商 Pro 系列模型。
+    en: A multimodal deep thinking model with extreme reasoning speed; it supports both text and visual understanding. Its text comprehension surpasses the previous generation Lite series models, while its visual understanding rivals competitor Pro series models.
+default_parameters:
+    - name: temperature
+      label:
+        zh: 生成隨機性
+        en: Temperature
+      desc:
+        zh: '- **temperature**: 調高溫度會使得模型的輸出更多樣性和創新性，反之，降低溫度會使輸出內容更加遵循指令要求但減少多樣性。建議不要與“Top p”同時調整。'
+        en: '**Temperature**:\n\n- When you increase this value, the model outputs more diverse and innovative content; when you decrease it, the model outputs less diverse content that strictly follows the given instructions.\n- It is recommended not to adjust this value with \"Top p\" at the same time.'
+      type: float
+      min: "0"
+      max: "1"
+      default_val:
+        balance: "0.8"
+        creative: "1"
+        default_val: "1.0"
+        precise: "0.3"
+      precision: 1
+      options: []
+      style:
+        widget: slider
+        label:
+            zh: 生成多樣性
+            en: Generation diversity
+    - name: max_tokens
+      label:
+        zh: 最大回復長度
+        en: Response max length
+      desc:
+        zh: 控制模型輸出的Tokens 長度上限。通常 100 Tokens 約等於 150 箇中文漢字。
+        en: You can specify the maximum length of the tokens output through this value. Typically, 100 tokens are approximately equal to 150 Chinese characters.
+      type: int
+      min: "1"
+      max: "4096"
+      default_val:
+        default_val: "4096"
+      options: []
+      style:
+        widget: slider
+        label:
+            zh: 輸入及輸出設置
+            en: Input and output settings
+    - name: top_p
+      label:
+        zh: Top P
+        en: Top P
+      desc:
+        zh: '- **Top p 爲累計概率**: 模型在生成輸出時會從概率最高的詞彙開始選擇，直到這些詞彙的總概率累積達到Top p 值。這樣可以限制模型只選擇這些高概率的詞彙，從而控制輸出內容的多樣性。建議不要與“生成隨機性”同時調整。'
+        en: '**Top P**:\n\n- An alternative to sampling with temperature, where only tokens within the top p probability mass are considered. For example, 0.1 means only the top 10% probability mass tokens are considered.\n- We recommend altering this or temperature, but not both.'
+      type: float
+      min: "0"
+      max: "1"
+      default_val:
+        default_val: "0.7"
+      precision: 2
+      options: []
+      style:
+        widget: slider
+        label:
+            zh: 生成多樣性
+            en: Generation diversity
+    - name: response_format
+      label:
+        zh: 輸出格式
+        en: Response format
+      desc:
+        zh: '- **JSON**: 將引導模型使用JSON格式輸出'
+        en: '**Response Format**:\n\n- **JSON**: Uses JSON format for replies'
+      type: int
+      min: ""
+      max: ""
+      default_val:
+        default_val: "0"
+      options:
+        - label: Text
+          value: "0"
+        - label: JSON
+          value: "1"
+      style:
+        widget: radio_buttons
+        label:
+            zh: 輸入及輸出設置
+            en: Input and output settings
+meta:
+    protocol: ark
+    capability:
+        function_call: true
+        input_modal:
+            - text
+            - image
+            - video
+        input_tokens: 224000
+        json_mode: true
+        max_tokens: 256000
+        output_modal:
+            - text
+        output_tokens: 32000
+        prefix_caching: true
+        reasoning: true
+        prefill_response: false
+    conn_config:
+        base_url: "https://ark.cn-beijing.volces.com/api/v3/"
+        api_key: ""
+        timeout: 0s
+        model: "" # model_id / endpoint_id
+        temperature: 0.1
+        frequency_penalty: 0
+        presence_penalty: 0
+        max_tokens: 4096
+        top_p: 0.7
+        top_k: 0
+        stop: []
+        enable_thinking: true
+        enable_base64_url: false
+        ark:
+            region: ""
+            access_key: ""
+            secret_key: ""
+            retry_times: null
+            custom_header: {}
+        custom: {}
+    status: 0

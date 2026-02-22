@@ -1,0 +1,206 @@
+/*
+ * Copyright 2025 coze-dev Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* eslint-disable */
+/* tslint:disable */
+// @ts-nocheck
+
+export type Int64 = string | number;
+
+/** 回調類型枚舉值 */
+export enum CallbackType {
+  /** 未知類型回調 */
+  Unknown = 0,
+  /** 普通回調 */
+  Normal = 1,
+  /** 直接提交 */
+  DirectSubmit = 2,
+  /** 上一頁超時提交 */
+  PreviousPageTimeout = 3,
+  /** 失敗重試回調 */
+  FailedRetry = 4,
+  /** 手動回調 */
+  ManualRetry = 5,
+  /** 僅回調不審出 */
+  OnlyCallBack = 6,
+  /** 仲裁輪審出 */
+  Arbitration = 7,
+}
+
+export enum EventType {
+  /** task abandoned  任務廢棄事件 */
+  abandon_task = 1,
+  /** task postponed  任務被押後事件 */
+  postponed_task = 2,
+  /** task normal closed  任務關閉事件 */
+  close_task = 3,
+}
+
+export enum ProjectMode {
+  /** label. multi-round labelling mode, once configured number of rounds done,
+merged result is effetive, no audting
+多輪標註. 配置的輪數標註完後, merge結果生效. 無質檢 */
+  label = 1,
+  /** QA. First round result is effective result. Blind review round will happen based on sampling rate
+(by default blind review result does not callback). If blind review result is not consistent with
+previous results, audit will happen and audit result will be effective
+
+質檢. 一審結果直接生效, 抽樣盲審(盲審結果默認不回調), 盲審不一致的進行質檢. 質檢結果生效. */
+  audit = 2,
+  /** double_review(dual moderation). Blind review with 100% sampling rate, after 2 round，merge results
+(at the moment you need merge the results yourself). Inconsistent results between 2 rounds
+lead to an audit.
+
+雙審. 100%盲省, 一, 二盲完成後，merge結果生效(暫時只支持業務自行merge). 不一致結果進行質檢. */
+  double_review = 3,
+  /** QA sampling. Samples of the tasks go to auditing round after first round. Auditing requires
+a additional labelling on whether the first round result is correct.
+
+抽檢. 一輪初審後按照一定比例進入質檢輪, 質檢需要額外標註初審的結果是否正確 */
+  sample_audit = 4,
+  /** Semi-custom. Based on first round results to decide which process to follow
+next (label/audit/double_review/sample_audit)
+
+可視化自定義. 根據初審結果決定任務具體走哪個模式(標註/質檢/雙審/抽檢) */
+  custom = 5,
+  /** Custom. Under this mode, the task does not follow particular process.
+User of this mode need to plugin code in order to define the process.
+
+完全自定義. 該模式下的任務沒有固定的流程,具體的審覈方式需要寫代碼插件進行自定義 */
+  full_custom = 6,
+}
+
+/** response status code used by interfaces under this service
+服務rsp的通用狀態碼 */
+export enum RspStatusCode {
+  OK = 0,
+  /** input does not meet the requirements  輸入不符合要求 */
+  BAD_REQUEST = 400,
+  /** internal server error   內部服務異常 */
+  INTERNAL_SERVER_ERROR = 500,
+}
+
+export enum TaskMode {
+  /** 多輪標註. 配置的輪數標註完後, merge結果生效. 無質檢 */
+  label = 1,
+  /** 質檢. 一審結果直接生效, 抽樣盲審, 盲審不一致的進行質檢. 質檢結果生效. */
+  audit = 2,
+  /** 雙審. 100%盲省, 一, 二盲完成後，merge結果生效(暫時只支持業務自行merge). 不一致結果進行質檢. */
+  double_review = 3,
+}
+
+/** NodeResult，record node status and context */
+export interface NodeResult {
+  status_code?: number;
+  status_message?: string;
+  node_context?: string;
+  node_name?: string;
+  node_type?: string;
+}
+
+export interface ProjectMeta {
+  /** Project ID
+隊列id */
+  project_id?: Int64;
+  /** Project type, business layer doesn't need to care about this property
+tcs內部產品線 */
+  product_type?: string;
+  /** Project tag
+隊列組 */
+  project_group?: string;
+  /** Project ID */
+  project_slug?: string;
+  /** Project mode
+模式：1標註 2質檢 3雙審 4抽檢 5自定義 */
+  project_mode?: ProjectMode;
+  /** Task mode */
+  task_mode?: TaskMode;
+  /** Project name/title
+隊列中文名 */
+  project_title?: string;
+  /** Project tags
+隊列標籤 */
+  tags?: Array<string>;
+  /** Project type:
+0 = normal queue, 1 = shared task pool queue, 2 = monitor queue */
+  project_type?: number;
+  /** Additional information about the project. e.g. monitor_project_id
+or task infomration passed-through from pipeline */
+  extra?: string;
+}
+
+/** The overall review results of a task
+ 1. Every callback will include results from previous rounds
+ 2. Please maintain the idempotence of the interface
+ 3. Business logic should combine VerifyResult.turn, TaskResult.current_turn, TaskResult.has_next_turn
+ to select results and do other processing */
+export interface TaskResult {
+  /** task ID, uniquelly identifies a task within TCS platform */
+  task_id?: Int64;
+  /** business side's unique identifier for a task, corresponds to the object_data */
+  object_id?: string;
+  /** deprecated */
+  object_version?: number;
+  /** deprecated, usage not recommended. Used under audit mode. merged_result only has value
+when in the last round and blind moderation turn callback setting is enabled. */
+  merged_result?: VerifyResult;
+  /** sorted by turn number (acsending) */
+  verify_results?: Array<VerifyResult>;
+  /** current ture. 0 = first review, 1 = second review (blind review), 2 = third review, -1 = audit
+(when processing task result in your business logic, please first check the current_turn) */
+  current_turn?: number;
+  /** object_data is the actual data of the task, submitted by the business side (with create_task) */
+  object_data?: string;
+  /** task mode, 1=labeling,2=audit,3=double,4=sample_audit,5=custom,6=full_custom */
+  task_mode?: TaskMode;
+  /** if there is a next round. 0 = no; 1 = yes;
+
+Note: the value is not effetive under sample_audit sync mode
+nor under audit mode where blind_review callback setting is not enabled. */
+  has_next_turn?: number;
+  /** task create timestamp millsecondes */
+  create_time?: Int64;
+}
+
+/** result for a round of review */
+export interface VerifyResult {
+  /** unique id for current review result    本次審覈結果的唯一標識 */
+  verify_id?: Int64;
+  /** review result, structure can reference the page template   本次審覈的結果，內部結構可參考頁面模板 */
+  verify_result?: string;
+  /** the reviwer   本次審覈人 */
+  verifier?: string;
+  /** >=0 means current round number in a multi-round process
+-1 means auditing,
+-2 means direct modification.
+
+>=0表示多輪審覈中本次審覈的輪數. -1表示質檢, -2表示直接修改 */
+  turn?: number;
+  /** the assign time of the task, millsecondes timestamp with utc+8, must minus 8hour when convert to CST time   任務領取時間,時間戳 */
+  assign_time?: Int64;
+  /** the submission time of the review, millsecondes timestamp with utc+8, must minus 8hour when convert to CST time  任務提交時間,時間戳 */
+  resolve_time?: Int64;
+  /** review cost time */
+  duration?: number;
+  /** the assign unix ts of the task */
+  real_assign_time?: Int64;
+  /** the submission unix ts of the review */
+  real_resolve_time?: Int64;
+  /** sub task */
+  sub_project_id?: Int64;
+  sub_project_title?: string;
+}
+/* eslint-enable */

@@ -1,0 +1,42 @@
+import {
+  ValidateTrigger,
+  type FormMetaV2,
+} from '@flowgram-adapter/free-layout-editor';
+
+import { createValueExpressionInputValidate } from '@/node-registries/common/validators';
+import {
+  fireNodeTitleChange,
+  provideNodeOutputVariablesEffect,
+} from '@/node-registries/common/effects';
+
+import { type FormData } from './types';
+import { FormRender } from './form';
+import { transformOnInit, transformOnSubmit } from './data-transformer';
+
+export const <%= it.CONSTANT_NAME_PLACE_HOLDER %>_FORM_META: FormMetaV2<FormData> = {
+  // 節點表單渲染
+  render: () => <FormRender />,
+
+  // 驗證觸發時機
+  validateTrigger: ValidateTrigger.onChange,
+
+  // 驗證規則
+  validate: {
+    // 必填
+    'inputs.inputParameters.0.input': createValueExpressionInputValidate({
+      required: true,
+    }),
+  },
+
+  // 副作用管理
+  effect: {
+    nodeMeta: fireNodeTitleChange,
+    outputs: provideNodeOutputVariablesEffect,
+  },
+
+  // 節點後端數據 -> 前端表單數據
+  formatOnInit: transformOnInit,
+
+  // 前端表單數據 -> 節點後端數據
+  formatOnSubmit: transformOnSubmit,
+};

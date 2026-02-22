@@ -1,0 +1,353 @@
+{
+  "nodes": [
+    {
+      "blocks": [],
+      "data": {
+        "nodeMeta": {
+          "description": "工作流的起始節點，用於設定啓動工作流需要的信息",
+          "icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Start-v2.jpg",
+          "subTitle": "",
+          "title": "開始"
+        },
+        "outputs": [
+          {
+            "name": "input",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "trigger_parameters": []
+      },
+      "edges": null,
+      "id": "100001",
+      "meta": {
+        "position": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "type": "1"
+    },
+    {
+      "blocks": [],
+      "data": {
+        "inputs": {
+          "inputParameters": [
+            {
+              "input": {
+                "type": "string",
+                "value": {
+                  "content": {
+                    "blockID": "107234",
+                    "name": "user_name",
+                    "source": "block-output"
+                  },
+                  "rawMeta": {
+                    "type": 1
+                  },
+                  "type": "ref"
+                }
+              },
+              "name": "user_name"
+            },
+            {
+              "input": {
+                "type": "integer",
+                "value": {
+                  "content": {
+                    "blockID": "107234",
+                    "name": "user_age",
+                    "source": "block-output"
+                  },
+                  "rawMeta": {
+                    "type": 2
+                  },
+                  "type": "ref"
+                }
+              },
+              "name": "user_age"
+            },
+            {
+              "input": {
+                "type": "string",
+                "value": {
+                  "content": {
+                    "blockID": "157915",
+                    "name": "nationality",
+                    "source": "block-output"
+                  },
+                  "rawMeta": {
+                    "type": 1
+                  },
+                  "type": "ref"
+                }
+              },
+              "name": "nationality"
+            },
+            {
+              "input": {
+                "type": "string",
+                "value": {
+                  "content": {
+                    "blockID": "157915",
+                    "name": "gender",
+                    "source": "block-output"
+                  },
+                  "rawMeta": {
+                    "type": 1
+                  },
+                  "type": "ref"
+                }
+              },
+              "name": "gender"
+            },
+            {
+              "input": {
+                "type": "string",
+                "value": {
+                  "content": {
+                    "blockID": "162226",
+                    "name": "input",
+                    "source": "block-output"
+                  },
+                  "rawMeta": {
+                    "type": 1
+                  },
+                  "type": "ref"
+                }
+              },
+              "name": "user_input"
+            }
+          ],
+          "terminatePlan": "returnVariables"
+        },
+        "nodeMeta": {
+          "description": "工作流的最終節點，用於返回工作流運行後的結果信息",
+          "icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-End-v2.jpg",
+          "subTitle": "",
+          "title": "結束"
+        }
+      },
+      "edges": null,
+      "id": "900001",
+      "meta": {
+        "position": {
+          "x": 1220.420323325635,
+          "y": 33.10958429561201
+        }
+      },
+      "type": "2"
+    },
+    {
+      "blocks": [],
+      "data": {
+        "inputs": {
+          "answer_type": "text",
+          "dynamic_option": {
+            "type": "string",
+            "value": {
+              "content": {
+                "blockID": "",
+                "name": "",
+                "source": "block-output"
+              },
+              "type": "ref"
+            }
+          },
+          "extra_output": true,
+          "inputParameters": [],
+          "limit": 3,
+          "llmParam": {
+            "generationDiversity": "balance",
+            "maxTokens": 4096,
+            "modelName": "豆包·1.5·Pro·32k",
+            "modelType": 1737521813,
+            "responseFormat": 2,
+            "systemPrompt": "",
+            "temperature": 0.8
+          },
+          "option_type": "static",
+          "options": [
+            {
+              "name": ""
+            },
+            {
+              "name": ""
+            }
+          ],
+          "question": "what's your name and age?"
+        },
+        "nodeMeta": {
+          "description": "支持中間向用戶提問問題,支持預置選項提問和開放式問題提問兩種方式",
+          "icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Direct-Question-v2.jpg",
+          "mainColor": "#3071F2",
+          "subTitle": "問答",
+          "title": "問答"
+        },
+        "outputs": [
+          {
+            "description": "用戶本輪對話輸入內容",
+            "name": "USER_RESPONSE",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user_name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user_age",
+            "required": true,
+            "type": "integer"
+          }
+        ]
+      },
+      "edges": null,
+      "id": "107234",
+      "meta": {
+        "position": {
+          "x": 431.6397228637413,
+          "y": -204
+        }
+      },
+      "type": "18"
+    },
+    {
+      "blocks": [],
+      "data": {
+        "inputs": {
+          "answer_type": "text",
+          "dynamic_option": {
+            "type": "string",
+            "value": {
+              "content": {
+                "blockID": "",
+                "name": "",
+                "source": "block-output"
+              },
+              "type": "ref"
+            }
+          },
+          "extra_output": true,
+          "inputParameters": [],
+          "limit": 3,
+          "llmParam": {
+            "generationDiversity": "balance",
+            "maxTokens": 2200,
+            "modelName": "DeepSeek-R1",
+            "modelType": 1738675233,
+            "responseFormat": 2,
+            "systemPrompt": "",
+            "temperature": 0.8
+          },
+          "option_type": "static",
+          "options": [
+            {
+              "name": ""
+            },
+            {
+              "name": ""
+            }
+          ],
+          "question": "what's your nationality and gender?"
+        },
+        "nodeMeta": {
+          "description": "支持中間向用戶提問問題,支持預置選項提問和開放式問題提問兩種方式",
+          "icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Direct-Question-v2.jpg",
+          "mainColor": "#3071F2",
+          "subTitle": "問答",
+          "title": "問答_1"
+        },
+        "outputs": [
+          {
+            "description": "用戶本輪對話輸入內容",
+            "name": "USER_RESPONSE",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "nationality",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "gender",
+            "required": true,
+            "type": "string"
+          }
+        ]
+      },
+      "edges": null,
+      "id": "157915",
+      "meta": {
+        "position": {
+          "x": 431.6397228637413,
+          "y": 145.10958429561202
+        }
+      },
+      "type": "18"
+    },
+    {
+      "blocks": [],
+      "data": {
+        "inputs": {
+          "outputSchema": "[{\"type\":\"string\",\"name\":\"input\",\"required\":true}]"
+        },
+        "nodeMeta": {
+          "description": "支持中間過程的信息輸入",
+          "icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Input-v2.jpg",
+          "mainColor": "#5C62FF",
+          "subTitle": "輸入",
+          "title": "輸入"
+        },
+        "outputs": [
+          {
+            "name": "input",
+            "required": true,
+            "type": "string"
+          }
+        ]
+      },
+      "edges": null,
+      "id": "162226",
+      "meta": {
+        "position": {
+          "x": 903.7228637413394,
+          "y": -164.5
+        }
+      },
+      "type": "30"
+    }
+  ],
+  "edges": [
+    {
+      "sourceNodeID": "100001",
+      "targetNodeID": "107234",
+      "sourcePortID": ""
+    },
+    {
+      "sourceNodeID": "100001",
+      "targetNodeID": "157915",
+      "sourcePortID": ""
+    },
+    {
+      "sourceNodeID": "157915",
+      "targetNodeID": "900001",
+      "sourcePortID": ""
+    },
+    {
+      "sourceNodeID": "162226",
+      "targetNodeID": "900001",
+      "sourcePortID": ""
+    },
+    {
+      "sourceNodeID": "107234",
+      "targetNodeID": "162226",
+      "sourcePortID": ""
+    }
+  ],
+  "versions": {
+    "loop": "v2"
+  }
+}

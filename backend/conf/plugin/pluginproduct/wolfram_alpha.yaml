@@ -1,0 +1,100 @@
+info:
+  description: 強大的數學工具
+  title: Wolfram Alpha
+  version: v1
+openapi: 3.0.1
+paths:
+  /v1/conversation.jsp:
+    get:
+      operationId: query
+      parameters:
+        - description: '數學表達式，需要轉成英文，不接受與數學無關的問題 '
+          in: query
+          name: i
+          schema:
+            description: '數學表達式，需要轉成英文，不接受與數學無關的問題 '
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  conversationID:
+                    type: string
+                  error:
+                    type: string
+                  host:
+                    type: string
+                  result:
+                    type: string
+                type: object
+          description:
+            ""
+      summary: 計算數學表達式的結果
+  /v2/query:
+    get:
+      operationId: calculate
+      parameters:
+        - description: 輸入一個數學表達式。如果輸入不是英文，請先將其翻譯成英文。
+          in: query
+          name: input
+          required: true
+          schema:
+            type: string
+        - description: 返回數據格式僅支持json。
+          in: query
+          name: output
+          schema:
+            default: json
+            type: string
+            x-global-disable: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  queryresult:
+                    properties:
+                      inputstring:
+                        type: string
+                      pods:
+                        items:
+                          properties:
+                            subpods:
+                              items:
+                                properties:
+                                  img:
+                                    properties:
+                                      src:
+                                        type: string
+                                      title:
+                                        type: string
+                                    type: object
+                                  plaintext:
+                                    type: string
+                                type: object
+                              type: array
+                            title:
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 逐步計算數學表達式。
+servers:
+  - url: https://api.wolframalpha.com

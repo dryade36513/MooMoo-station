@@ -1,0 +1,56 @@
+info:
+  description: 飛書認證及授權
+  title: 飛書認證及授權
+  version: v1
+openapi: 3.0.1
+paths:
+  /access_token/get_tenant_access_token:
+    post:
+      operationId: get_tenant_access_token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                app_id:
+                  description: 應用唯一標識，創建應用後獲得。
+                  type: string
+                app_secret:
+                  description: 應用祕鑰，創建應用後獲得。
+                  type: string
+              required:
+                - app_id
+                - app_secret
+              type: object
+        description: new desc
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 錯誤碼，非 0 取值表示失敗
+                    type: number
+                  expire:
+                    description: tenant_access_token 的過期時間，單位爲秒
+                    type: number
+                  log_id:
+                    description: 鏈路追蹤 id
+                    type: string
+                  msg:
+                    description: 錯誤描述
+                    type: string
+                  tenant_access_token:
+                    description: 租戶訪問憑證
+                    type: string
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: |-
+        自建應用通過此接口獲取 tenant_access_token。
+        
+        說明： tenant_access_token 的最大有效期是 2 小時。如果在有效期小於 30 分鐘的情況下，調用本接口，會返回一個新的 tenant_access_token，這會同時存在兩個有效的 tenant_access_token。
+servers:
+  - url: https://lark-plugin-api.solutionsuite.cn/lark-plugin

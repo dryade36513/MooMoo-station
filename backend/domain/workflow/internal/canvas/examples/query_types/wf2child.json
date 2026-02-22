@@ -1,0 +1,149 @@
+{
+  "nodes": [
+    {
+      "id": "100001",
+      "type": "1",
+      "meta": {
+        "position": {
+          "x": -7,
+          "y": -68
+        }
+      },
+      "data": {
+        "nodeMeta": {
+          "description": "工作流的起始節點，用於設定啓動工作流需要的信息",
+          "icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Start-v2.jpg",
+          "subTitle": "",
+          "title": "開始"
+        },
+        "outputs": [
+          {
+            "type": "string",
+            "name": "input",
+            "required": false
+          }
+        ],
+        "trigger_parameters": []
+      }
+    },
+    {
+      "id": "900001",
+      "type": "2",
+      "meta": {
+        "position": {
+          "x": 1004,
+          "y": -125.6
+        }
+      },
+      "data": {
+        "nodeMeta": {
+          "description": "工作流的最終節點，用於返回工作流運行後的結果信息",
+          "icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-End-v2.jpg",
+          "subTitle": "",
+          "title": "結束"
+        },
+        "inputs": {
+          "terminatePlan": "returnVariables",
+          "inputParameters": [
+            {
+              "name": "output",
+              "input": {
+                "type": "string",
+                "value": {
+                  "type": "ref",
+                  "content": {
+                    "source": "block-output",
+                    "blockID": "124342",
+                    "name": "key0"
+                  },
+                  "rawMeta": {
+                    "type": 1
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "124342",
+      "type": "5",
+      "meta": {
+        "position": {
+          "x": 523,
+          "y": -191.2
+        }
+      },
+      "data": {
+        "nodeMeta": {
+          "description": "編寫代碼，處理輸入變量來生成返回值",
+          "icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Code-v2.jpg",
+          "mainColor": "#00B2B2",
+          "subTitle": "代碼",
+          "title": "代碼"
+        },
+        "inputs": {
+          "inputParameters": [
+            {
+              "name": "input",
+              "input": {
+                "type": "string",
+                "value": {
+                  "type": "literal",
+                  "content": "12",
+                  "rawMeta": {
+                    "type": 1
+                  }
+                }
+              }
+            }
+          ],
+          "code": "// 在這裏，您可以通過 ‘params’  獲取節點中的輸入變量，並通過 'ret' 輸出結果\n// 'params' 和 'ret' 已經被正確地注入到環境中\n// 下面是一個示例，獲取節點輸入中參數名爲‘input’的值：\n// const input = params.input; \n// 下面是一個示例，輸出一個包含多種數據類型的 'ret' 對象：\n// const ret = { \"name\": ‘小明’, \"hobbies\": [“看書”, “旅遊”] };\n\nasync function main({ params }: Args): Promise<Output> {\n    // 構建輸出對象\n    const ret = {\n        \"key0\": params.input + params.input, // 拼接兩次入參 input 的值\n        \"key1\": [\"hello\", \"world\"], // 輸出一個數組\n        \"key2\": { // 輸出一個Object\n            \"key21\": \"hi\"\n        },\n    };\n\n    return ret;\n}",
+          "language": 5,
+          "settingOnError": {
+            "processType": 1,
+            "timeoutMs": 60000,
+            "retryTimes": 0
+          }
+        },
+        "outputs": [
+          {
+            "type": "string",
+            "name": "key0"
+          },
+          {
+            "type": "list",
+            "name": "key1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "type": "object",
+            "name": "key2",
+            "schema": [
+              {
+                "type": "string",
+                "name": "key21"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "sourceNodeID": "100001",
+      "targetNodeID": "124342"
+    },
+    {
+      "sourceNodeID": "124342",
+      "targetNodeID": "900001"
+    }
+  ],
+  "versions": {
+    "loop": "v2"
+  }
+}

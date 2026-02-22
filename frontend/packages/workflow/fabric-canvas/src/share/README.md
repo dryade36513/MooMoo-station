@@ -1,0 +1,3 @@
+這個目錄放置了一些和 @flow-workflow/fabric-canvas-node-render 可以共用的函數、類型、常量...
+
+因爲 @flow-workflow/fabric-canvas-node-render 是一個 node 工程，要注意 share 中不要出現 tsx 文件，否則會導致 node 工程無法編譯。

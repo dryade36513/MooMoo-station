@@ -1,0 +1,93 @@
+{
+  "nodes": [
+    {
+      "id": "100001",
+      "type": "1",
+      "meta": {
+        "position": {
+          "x": 13.818572856225469,
+          "y": -37.20384999753011
+        }
+      },
+      "data": {
+        "nodeMeta": {
+          "title": "開始",
+          "description": "工作流的起始節點，用於設定啓動工作流需要的信息",
+          "icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Start-v2.jpg",
+          "subTitle": ""
+        },
+        "settings": null,
+        "version": "",
+        "outputs": [
+          {
+            "type": "string",
+            "name": "USER_INPUT",
+            "required": false
+          },
+          {
+            "type": "string",
+            "name": "CONVERSATION_NAME",
+            "required": false,
+            "description": "本次請求綁定的會話，會自動寫入消息、會從該會話讀對話歷史。",
+            "defaultValue": "Default"
+          },
+          {
+            "type": "string",
+            "name": "input",
+            "required": false
+          }
+        ],
+        "trigger_parameters": []
+      }
+    },
+    {
+      "id": "900001",
+      "type": "2",
+      "meta": {
+        "position": {
+          "x": 642.9671427865745,
+          "y": -37.20384999753011
+        }
+      },
+      "data": {
+        "nodeMeta": {
+          "description": "工作流的最終節點，用於返回工作流運行後的結果信息",
+          "icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-End-v2.jpg",
+          "subTitle": "",
+          "title": "結束"
+        },
+        "inputs": {
+          "terminatePlan": "returnVariables",
+          "inputParameters": [
+            {
+              "name": "output",
+              "input": {
+                "type": "string",
+                "value": {
+                  "type": "ref",
+                  "content": {
+                    "source": "block-output",
+                    "blockID": "100001",
+                    "name": "input"
+                  },
+                  "rawMeta": {
+                    "type": 1
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "sourceNodeID": "100001",
+      "targetNodeID": "900001"
+    }
+  ],
+  "versions": {
+    "loop": "v2"
+  }
+}

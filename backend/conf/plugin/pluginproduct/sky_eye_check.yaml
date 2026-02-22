@@ -1,0 +1,431 @@
+info:
+  description: 利用天眼查官方API接口,以關鍵詞檢索企業列表實現企業搜索功能，並支持查詢企業基本信息、新聞輿情、經營異常及變更記錄等信息。
+  title: 天眼查
+  version: v1
+openapi: 3.0.1
+paths:
+  /ic/baseinfoV2/2.0:
+    get:
+      operationId: company_detail
+      parameters:
+        - description: 搜索關鍵字（公司名稱、公司id、註冊號或社會統一信用代碼）
+          in: query
+          name: keyword
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  error_code:
+                    type: number
+                  reason:
+                    type: string
+                  result:
+                    properties:
+                      actualCapital:
+                        type: string
+                      actualCapitalCurrency:
+                        type: string
+                      alias:
+                        type: string
+                      approvedTime:
+                        type: number
+                      base:
+                        type: string
+                      bondName:
+                        type: string
+                      bondNum:
+                        type: string
+                      bondType:
+                        type: string
+                      businessScope:
+                        type: string
+                      cancelDate:
+                        type: integer
+                      cancelReason:
+                        type: string
+                      city:
+                        type: string
+                      companyOrgType:
+                        type: string
+                      creditCode:
+                        type: string
+                      district:
+                        type: string
+                      email:
+                        type: string
+                      estiblishTime:
+                        type: number
+                      fromTime:
+                        type: number
+                      historyNameList:
+                        items:
+                          type: string
+                        type: array
+                      historyNames:
+                        type: string
+                      id:
+                        type: number
+                      industry:
+                        type: string
+                      industryAll:
+                        properties:
+                          category:
+                            type: string
+                          categoryBig:
+                            type: string
+                          categoryMiddle:
+                            type: string
+                          categorySmall:
+                            type: string
+                        type: object
+                      isMicroEnt:
+                        type: number
+                      legalPersonName:
+                        type: string
+                      name:
+                        type: string
+                      orgNumber:
+                        type: string
+                      percentileScore:
+                        type: number
+                      phoneNumber:
+                        type: string
+                      property3:
+                        type: string
+                      regCapital:
+                        type: string
+                      regCapitalCurrency:
+                        type: string
+                      regInstitute:
+                        type: string
+                      regLocation:
+                        type: string
+                      regNumber:
+                        type: string
+                      regStatus:
+                        type: string
+                      revokeDate:
+                        type: integer
+                      revokeReason:
+                        type: string
+                      socialStaffNum:
+                        type: number
+                      staffNumRange:
+                        type: string
+                      tags:
+                        type: string
+                      taxNumber:
+                        type: string
+                      toTime:
+                        type: integer
+                      type:
+                        type: number
+                      updateTimes:
+                        type: number
+                      usedBondName:
+                        type: string
+                      websiteList:
+                        type: string
+                    type: object
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 可以通過公司名稱（需公司全稱）或ID獲取企業基本信息和企業聯繫方式，包括公司名稱或ID、類型、成立日期、電話、郵箱、網址等字段的詳細信息。
+  /ic/changeinfo/2.0:
+    get:
+      operationId: change_log
+      parameters:
+        - description: 搜索關鍵字（公司名稱、公司id、註冊號或社會統一信用代碼）
+          in: query
+          name: keyword
+          required: true
+          schema:
+            type: string
+        - description: 當前頁數（默認第1頁）
+          in: query
+          name: pageNum
+          schema:
+            type: integer
+        - description: 每頁條數（默認20條，最大20條）
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  error_code:
+                    type: number
+                  reason:
+                    type: string
+                  result:
+                    properties:
+                      items:
+                        items:
+                          properties:
+                            changeItem:
+                              type: string
+                            changeTime:
+                              type: string
+                            contentAfter:
+                              type: string
+                            contentBefore:
+                              type: string
+                            createTime:
+                              type: string
+                          type: object
+                        type: array
+                      total:
+                        type: number
+                    type: object
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 可以通過公司名稱（需公司全稱）或ID獲取企業變更記錄，變更記錄包括工商變更事項、變更前後信息等字段的詳細信息。
+  /mr/abnormal/2.0:
+    get:
+      operationId: abnormal_operation
+      parameters:
+        - description: "String\t搜索關鍵字（公司名稱、公司id、註冊號或社會統一信用代碼）"
+          in: query
+          name: keyword
+          required: true
+          schema:
+            type: string
+        - description: 每頁條數（默認20條，最大20條）
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+        - description: 當前頁數（默認第1頁）
+          in: query
+          name: pageNum
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  error_code:
+                    type: number
+                  reason:
+                    type: string
+                  result:
+                    properties:
+                      items:
+                        items:
+                          properties:
+                            putDate:
+                              type: string
+                            putDepartment:
+                              type: string
+                            putReason:
+                              type: string
+                            removeDate:
+                              type: string
+                            removeDepartment:
+                              type: string
+                            removeReason:
+                              type: string
+                          type: object
+                        type: array
+                      total:
+                        type: number
+                    type: object
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 可以通過公司名稱（需公司全稱）或ID獲取企業經營異常信息，經營異常信息包括列入/移除原因、時間、做出決定機關等字段的詳細信息。
+  /ps/news/2.0:
+    get:
+      operationId: news
+      parameters:
+        - description: 公司名稱（精確匹配、name和id其一爲必填即可）
+          in: query
+          name: name
+          schema:
+            type: string
+        - description: 每頁條數（默認20條，最大20條）
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+        - description: 開始時間
+          in: query
+          name: startTime
+          schema:
+            type: string
+        - description: 公司id（name和id其一爲必填即可）
+          in: query
+          name: id
+          schema:
+            type: integer
+        - description: 結束時間
+          in: query
+          name: endTime
+          schema:
+            type: string
+        - description: 當前頁數（默認第1頁）
+          in: query
+          name: pageNum
+          schema:
+            type: integer
+        - description: 標籤（多個逗號分隔，默認返回全部）
+          in: query
+          name: tags
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  error_code:
+                    type: number
+                  reason:
+                    type: string
+                  result:
+                    properties:
+                      items:
+                        items:
+                          properties:
+                            abstracts:
+                              type: string
+                            docid:
+                              type: string
+                            emotion:
+                              type: number
+                            rtm:
+                              type: number
+                            tags:
+                              items:
+                                type: string
+                              type: array
+                            title:
+                              type: string
+                            uri:
+                              type: string
+                            website:
+                              type: string
+                          type: object
+                        type: array
+                      total:
+                        type: number
+                    type: object
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 可以通過公司名稱（需公司全稱）或ID精確匹配獲取新聞列表。
+  /search/2.0:
+    get:
+      operationId: search
+      parameters:
+        - description: 關鍵詞
+          in: query
+          name: word
+          required: true
+          schema:
+            type: string
+        - description: 每頁條數（默認20條，最大20條）
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+        - description: 當前頁數（默認第1頁）
+          in: query
+          name: pageNum
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  error_code:
+                    type: number
+                  reason:
+                    type: string
+                  result:
+                    properties:
+                      items:
+                        items:
+                          properties:
+                            base:
+                              type: string
+                            companyType:
+                              type: number
+                            creditCode:
+                              type: string
+                            estiblishTime:
+                              type: string
+                            id:
+                              type: number
+                            legalPersonName:
+                              type: string
+                            matchType:
+                              type: string
+                            name:
+                              type: string
+                            orgNumber:
+                              type: string
+                            regCapital:
+                              type: string
+                            regNumber:
+                              type: string
+                            regStatus:
+                              type: string
+                            type:
+                              type: number
+                          type: object
+                        type: array
+                      total:
+                        type: number
+                    type: object
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 可以通過關鍵詞獲取企業列表，企業列表包括公司名稱或ID、類型、成立日期、經營狀態、統一社會信用代碼等字段的詳細信息。
+servers:
+  - url: https://open.api.tianyancha.com/services/open

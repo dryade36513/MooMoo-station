@@ -1,0 +1,95 @@
+info:
+  description: 飛書知識庫搜索Wiki、獲取Wiki全部子節點列表
+  title: 飛書知識庫
+  version: v1
+openapi: 3.0.1
+paths:
+  /wiki/search_wiki:
+    post:
+      operationId: search_wiki
+      parameters:
+        - description: 下一頁的分頁 token，首頁不需要填寫，根據返回的 token 獲取下一頁數據
+          in: query
+          name: page_token
+          schema:
+            type: string
+        - description: 本頁返回數量的最大值，範圍0-50
+          in: query
+          name: page_size
+          schema:
+            default: 20
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                node_id:
+                  description: 不爲空搜索該節點及其所有子節點，爲空搜索所有 wiki（使用 node_id 過濾必須傳入 space_id）
+                  type: string
+                query:
+                  description: 搜索關鍵詞
+                  type: string
+                space_id:
+                  description: 文檔所屬的知識空間ID，爲空搜索全部知識空間，支持輸入空間url，如：https://svi136aogf123.feishu.cn/wiki/settings/7166950623940706332
+                  type: string
+              required:
+                - query
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 錯誤碼，非 0 表示失敗
+                    type: integer
+                  data:
+                    description: 返回數據
+                    properties:
+                      has_more:
+                        description: 是否還有下一頁數據
+                        type: boolean
+                      items:
+                        description: wiki 信息數組
+                        items:
+                          description: wiki 信息
+                          properties:
+                            icon:
+                              description: wiki 對應圖標的 url
+                              type: string
+                            node_id:
+                              description: wiki 節點 Id
+                              type: string
+                            obj_type:
+                              description: wiki 類型, 參考文檔類型表
+                              type: integer
+                            space_id:
+                              description: wiki 所屬知識空間 Id
+                              type: string
+                            title:
+                              description: wiki 標題
+                              type: string
+                            url:
+                              description: wiki 的訪問 url
+                              type: string
+                          type: object
+                        type: array
+                      page_token:
+                        description: 如果 has_more 爲 true 則返回下一頁的 token
+                        type: string
+                    type: object
+                  log_id:
+                    description: 鏈路追蹤 id
+                    type: string
+                  msg:
+                    description: 錯誤描述
+                    type: string
+                type: object
+          description: new desc
+        default:
+          description: ""
+      summary: 搜索 Wiki 文檔列表
+servers:
+  - url: https://lark-plugin-api.solutionsuite.cn/lark-plugin

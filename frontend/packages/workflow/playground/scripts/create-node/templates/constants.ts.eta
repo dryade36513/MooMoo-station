@@ -1,0 +1,26 @@
+import { nanoid } from 'nanoid';
+import { ViewVariableType } from '@coze-workflow/variable';
+
+// 入參路徑，試運行等功能依賴該路徑提取參數
+export const INPUT_PATH = 'inputs.inputParameters';
+
+// 定義固定出參
+export const OUTPUTS = [
+  {
+    key: nanoid(),
+    name: 'outputList',
+    type: ViewVariableType.ArrayObject,
+    children: [
+      {
+        key: nanoid(),
+        name: 'id',
+        type: ViewVariableType.String,
+      },
+      {
+        key: nanoid(),
+        name: 'content',
+        type: ViewVariableType.String,
+      },
+    ],
+  },
+];

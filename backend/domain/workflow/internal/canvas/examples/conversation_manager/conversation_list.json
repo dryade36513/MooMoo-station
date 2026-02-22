@@ -1,0 +1,193 @@
+{
+	"nodes": [{
+		"blocks": [],
+		"data": {
+			"nodeMeta": {
+				"description": "工作流的起始節點，用於設定啓動工作流需要的信息",
+				"icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Start-v2.jpg",
+				"subTitle": "",
+				"title": "開始"
+			},
+			"outputs": [{
+				"name": "USER_INPUT",
+				"required": false,
+				"type": "string"
+			}, {
+				"defaultValue": "Default",
+				"description": "本次請求綁定的會話，會自動寫入消息、會從該會話讀對話歷史。",
+				"name": "CONVERSATION_NAME",
+				"required": false,
+				"type": "string"
+			}],
+			"trigger_parameters": []
+		},
+		"edges": null,
+		"id": "100001",
+		"meta": {
+			"position": {
+				"x": 0,
+				"y": 0
+			}
+		},
+		"type": "1"
+	}, {
+		"blocks": [],
+		"data": {
+			"inputs": {
+				"content": {
+					"type": "string",
+					"value": {
+						"content": "{{output}}",
+						"type": "literal"
+					}
+				},
+				"inputParameters": [{
+					"input": {
+						"schema": {
+							"schema": [{
+								"name": "conversationName",
+								"type": "string"
+							}, {
+								"name": "conversationId",
+								"type": "string"
+							}],
+							"type": "object"
+						},
+						"type": "list",
+						"value": {
+							"content": {
+								"blockID": "107363",
+								"name": "conversationList",
+								"source": "block-output"
+							},
+							"rawMeta": {
+								"type": 103
+							},
+							"type": "ref"
+						}
+					},
+					"name": "output"
+				}],
+				"streamingOutput": true,
+				"terminatePlan": "useAnswerContent"
+			},
+			"nodeMeta": {
+				"description": "工作流的最終節點，用於返回工作流運行後的結果信息",
+				"icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-End-v2.jpg",
+				"subTitle": "",
+				"title": "結束"
+			}
+		},
+		"edges": null,
+		"id": "900001",
+		"meta": {
+			"position": {
+				"x": 1058,
+				"y": -13
+			}
+		},
+		"type": "2"
+	}, {
+		"blocks": [],
+		"data": {
+			"inputs": {
+				"inputParameters": []
+			},
+			"nodeMeta": {
+				"description": "用於查詢所有會話，包含靜態會話、動態會話",
+				"icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-查詢會話.jpg",
+				"mainColor": "#F2B600",
+				"subTitle": "查詢會話列表",
+				"title": "查詢會話列表"
+			},
+			"outputs": [{
+				"name": "conversationList",
+				"schema": {
+					"schema": [{
+						"name": "conversationName",
+						"type": "string"
+					}, {
+						"name": "conversationId",
+						"type": "string"
+					}],
+					"type": "object"
+				},
+				"type": "list"
+			}]
+		},
+		"edges": null,
+		"id": "107363",
+		"meta": {
+			"position": {
+				"x": 561,
+				"y": 186
+			}
+		},
+		"type": "53"
+	}, {
+		"blocks": [],
+		"data": {
+			"inputs": {
+				"inputParameters": [{
+					"input": {
+						"type": "string",
+						"value": {
+							"content": {
+								"blockID": "100001",
+								"name": "CONVERSATION_NAME",
+								"source": "block-output"
+							},
+							"rawMeta": {
+								"type": 1
+							},
+							"type": "ref"
+						}
+					},
+					"name": "conversationName"
+				}]
+			},
+			"nodeMeta": {
+				"description": "用於創建會話",
+				"icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Conversation-Create.jpeg",
+				"mainColor": "#F2B600",
+				"subTitle": "創建會話",
+				"title": "創建會話"
+			},
+			"outputs": [{
+				"name": "isSuccess",
+				"type": "boolean"
+			}, {
+				"name": "isExisted",
+				"type": "boolean"
+			}, {
+				"name": "conversationId",
+				"type": "string"
+			}]
+		},
+		"edges": null,
+		"id": "110245",
+		"meta": {
+			"position": {
+				"x": 487,
+				"y": -196
+			}
+		},
+		"type": "39"
+	}],
+	"edges": [{
+		"sourceNodeID": "100001",
+		"targetNodeID": "110245",
+		"sourcePortID": ""
+	}, {
+		"sourceNodeID": "107363",
+		"targetNodeID": "900001",
+		"sourcePortID": ""
+	}, {
+		"sourceNodeID": "110245",
+		"targetNodeID": "107363",
+		"sourcePortID": ""
+	}],
+	"versions": {
+		"loop": "v2"
+	}
+}
